@@ -2,30 +2,37 @@ import datetime
 import json
 import random
 
-secret = random.randint(1, 30)
-attempts = 0
+secret = random.randint(1,10)
 
 with open("score_list.json", "r") as score_file:
     score_list = json.loads(score_file.read())
 
-print("Top scores: " + str(score_list))
 
-for score_dict in score_list:
-    print(str(score_dict["attempts"]) + " attempts, date: " + score_dict.get("date"))
+#---- FUNCTIONS -----
+def get_top_scores():
+    new_score_list = sorted(score_list, key=lambda x:x["attempts"])[:3]
+    print("Top scores: " + str(new_score_list))
 
-while True:
-    guess = int(input("Guess the secret number (between 1 and 30): "))
-    attempts += 1
+def get_score_list():
+    for score_dict in score_list:
+        print(str(score_dict["attempts"]) + " attempts, date: " + score_dict.get("date"))
 
-    if guess == secret:
-        score_list.append({"attempts": attempts, "date": str(datetime.datetime.now())})
-        with open("score_list.json", "w") as score_file:
-            score_file.write(json.dumps(score_list))
+def play_game():
+    attempts = 0
+    while True:
+        guess = int(input("Guess the secret number (between 1 and 30): "))
+        attempts += 1
 
-        print("You've guessed it - congratulations! It's number " + str(secret))
-        print("Attempts needed: " + str(attempts))
-        break
-    elif guess > secret:
-        print("Your guess is not correct... try something smaller")
-    elif guess < secret:
-        print("Your guess is not correct... try something bigger")
+        if guess == secret:
+            score_list.append({"attempts": attempts, "date": str(datetime.datetime.now())})
+            with open("score_list.json", "w") as score_file:
+                score_file.write(json.dumps(score_list))
+
+            print("You've guessed it - congratulations! It's number " + str(secret))
+            print("Attempts needed: " + str(attempts))
+            break
+        elif guess > secret:
+            print("Your guess is not correct... try something smaller")
+        elif guess < secret:
+            print("Your guess is not correct... try something bigger")
+#---------------------
